@@ -1,0 +1,26 @@
+<script src="../angular/angular.min.js"></script>
+<script src="../angular-aria/angular-aria.min.js"></script>
+<script src="../angular-animate/angular-animate.min.js"></script>
+<script src="../angular-material/angular-material.min.js"></script>
+<link rel="stylesheet" href="../angular-material/angular-material.css">
+<script>
+(function() {
+    var orig = angular.module;
+    angular.modulesToBootstrap = [];
+    angular.module = function(name, requires, configFn) {
+    	 if (requires) {
+        	 angular.modulesToBootstrap.push(name);	
+    		 for (var x in requires) {
+    			 var moduleToBootstrapIndex = angular.modulesToBootstrap.indexOf(requires[x]);
+    			 if (moduleToBootstrapIndex !== -1) {
+    				 angular.modulesToBootstrap.splice(moduleToBootstrapIndex, 1);
+    			 }
+    		 }
+    	 }
+        return orig.apply(null, arguments);
+    };
+    angular.element(document).ready(function() {
+    	angular.bootstrap(document, angular.modulesToBootstrap);
+    })
+})();
+</script>
